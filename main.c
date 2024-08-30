@@ -1,10 +1,10 @@
 /*
 Codificado por: Felipe de A. R. França
 
-Versão: 1.0
+Versão: 1.1
 
-Data: 29/08/2024
-Hora: 18:13
+Data: 30/08/2024
+Hora: 10:12
 
 Descrição: Calculadora didática de conversão entre bases.
 */
@@ -17,6 +17,8 @@ void int_to_bin(int n);
 void int_to_oct(int n);
 void int_to_hex(int n);
 void int_to_bcd(int n);
+
+void int_to_signed_bin(int n);
 
 int main (void){
 
@@ -32,7 +34,8 @@ int main (void){
     printf("1 - Decimal para Binário (8bits)\n");
     printf("2 - Decimal para Octal (8bits)\n");
     printf("3 - Decimal para Hexadecimal (8bits)\n");
-    printf("4 - Decimal para BCD (12bits)\n");
+    printf("4 - Decimal para BCD (12bits)\n\n");
+    printf("5 - Decimal para Binário com Sinal (16bits)\n");
     printf("\n0 - Sair\n");
     
     printf("===============================================================\n");
@@ -53,6 +56,9 @@ int main (void){
         printf("!OVERFLOW!\n");
         printf("Numero escolhido excede o limite de 8bits!\n");
       }
+      else if (int_num < 0){
+        printf("Numero escolhido é negativo!\n");
+      }
       else{
         int_to_bin(int_num);
         printf("\n");
@@ -65,6 +71,9 @@ int main (void){
       if (int_num > 255){
         printf("!OVERFLOW!\n");
         printf("Numero escolhido excede o limite de 8bits!\n");
+      }
+      else if (int_num < 0){
+        printf("Numero escolhido é negativo!\n");
       }
       else{
         int_to_oct(int_num);
@@ -79,6 +88,9 @@ int main (void){
         printf("!OVERFLOW!\n");
         printf("Numero escolhido excede o limite de 8bits!\n");
       }
+      else if (int_num < 0){
+        printf("Numero escolhido é negativo!\n");
+      }
       else{
         int_to_hex(int_num);
         printf("\n");
@@ -90,13 +102,35 @@ int main (void){
       scanf(" %d", &int_num);
       printf("\n");
       if (int_num > 999){
-        printf("!OVERFLOW!\n");
         printf("Numero escolhido excede o limite de 12bits!\n");
+      }
+      else if (int_num < 0){
+        printf("Numero escolhido é negativo!\n");
       }
       else{
         int_to_bcd(int_num);
         printf("\n");
       }
+    }
+    else if (choice == 5){
+      printf("Digite um número inteiro: ");
+      scanf(" %d", &int_num);
+      printf("\n");
+      if (int_num > 32767){
+        printf("!OVERFLOW!\n");
+        printf("Numero escolhido excede o limite de 16bits!\n");
+      }
+      else if (int_num < -32768){
+        printf("!OVERFLOW!\n");
+        printf("Numero escolhido excede o limite de 16bits!\n");
+      }
+      else{
+        int_to_signed_bin(int_num);
+        printf("\n");
+      }
+    }
+    else{
+      printf("Opção inválida!\n");
     }
 
 
@@ -369,4 +403,155 @@ void int_to_bcd(int n){
     printf("%d", binU[i]);
   }
   printf("\n");
+}
+
+void int_to_signed_bin(int n){
+  int bin[16];
+  for (int i = 0; i < 16; i++){
+    bin[i] = 0;
+  }
+  int i = 0;
+  int originaln = n;
+  int positive;
+
+  printf("Para a conversão de decimal para binário com sinal, é necessário primeiro checar o sinal do número.\n");
+  printf("Se o número for positivo, basta converter para binário normalmente, dividindo o número até que o resultado seja 0.\n");
+  printf("Se o número for negativo, será necessário fazer o complemento a 2 do mesmo número com sinal positivo.\n\n");
+  
+  if (n < 0){
+
+    printf("O número escolhido é negativo, então o complemento a 2 será necessário.\n\n");
+    
+    positive = n * -1;
+
+    printf("Primeiro, fazemos a conversão do número para um número positivo: %d x (-1) = %d\n\n", n, positive);
+
+    printf("Agora, fazemos a conversão do número positivo para binário normalmente.\n\n");
+
+    while (positive != 0){
+
+      bin[15 - i] = positive % 2;
+
+      printf(" %d |___2___\n", positive);
+      printf(" %d   %d\n", positive % 2, positive / 2);
+      printf("\n");
+
+      positive = positive / 2;
+      i++;
+    }
+
+    printf("Agora, basta escrever os restos das divisões da direita para a esquerda.\n");
+    printf("Fazer isso ordena os bits em ordem de significância.\n\n");
+    printf("+ significante <------------------> - significante\n\n");
+    printf("Assim, obtemos: ");
+    
+    for (int i = 0; i < 16; i++){
+      printf("%d", bin[i]);
+    }
+    printf("\n\n");
+
+    printf("Agora, para fazer o complemento a 2, primeiro invertemos os bits.\n\n");
+
+    for (int i = 0; i < 16; i++){
+      printf("%d", bin[i]);
+    }
+    printf(" -> ");
+
+    for(int i = 0; i < 16; i++){
+      if (bin[i] == 0){
+        bin[i] = 1;
+      }
+      else{
+        bin[i] = 0;
+      }
+    }
+
+    for (int i = 0; i < 16; i++){
+      printf("%d", bin[i]);
+    }
+    printf("\n\n");
+
+    printf("Agora, somamos 1 ao número.\n\n");
+    
+    for (int i = 0; i < 16; i++){
+      printf("%d", bin[i]);
+    }
+    printf("\n");
+    printf("+              1\n");
+    printf("----------------\n");
+
+    
+
+    for(int i = 0; i < 16; i++){
+      if (bin[15 - i] + 1 == 2){
+        bin[15 - i] = 0;
+      }
+      else{
+        bin[15 - i] = bin[15 - i] + 1;
+        break;
+      }
+    }
+
+    for (int i = 0; i < 16; i++){
+      printf("%d", bin[i]);
+    }
+    printf("\n\n");
+
+    printf("O número %d em binário com sinal fica: ", originaln);
+    for (int i = 0; i < 16; i++){
+      printf("%d", bin[i]);
+    }
+    printf("\n");
+    
+  }
+  else if (n == 0){
+    
+    printf("O número escolhido é 0, então o complemento a 2 não será necessário.\n\n");
+    printf("Agora, fazemos a conversão do número para binário normalmente.\n\n");
+
+    printf(" %d |___2___\n", n);
+    printf(" %d   %d\n", n % 2, n / 2);
+    printf("\n");
+
+
+    printf("Agora, basta escrever os restos das divisões da direita para a esquerda.\n");
+    printf("Fazer isso ordena os bits em ordem de significância.\n\n");
+    printf("+ significante <------------------> - significante\n\n");
+
+    printf("O número %d em binário com sinal fica: ", originaln);
+
+    for (int i = 0; i < 16; i++){
+      printf("%d", bin[i]);
+    }
+    printf("\n");
+  }
+  else{
+    positive = n;
+
+    printf("O número escolhido é positivo, então o complemento a 2 não será necessário.\n\n");
+
+    printf("Agora, fazemos a conversão do número positivo para binário normalmente.\n\n");
+    
+    while (positive != 0){
+
+      bin[15 - i] = positive % 2;
+      
+      printf(" %d |___2___\n", positive);
+      printf(" %d   %d\n", positive % 2, positive / 2);
+      printf("\n");
+
+      positive = positive / 2;
+      i++;
+    }
+
+    printf("Agora, basta escrever os restos das divisões da direita para a esquerda.\n");
+    printf("Fazer isso ordena os bits em ordem de significância.\n\n");
+    printf("+ significante <------------------> - significante\n\n");
+    
+    printf("O número %d em binário com sinal fica: ", originaln);
+    for (int i = 0; i < 16; i++){
+      printf("%d", bin[i]);
+    }
+    printf("\n");
+  }
 }

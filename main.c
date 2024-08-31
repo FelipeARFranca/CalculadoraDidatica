@@ -1,10 +1,10 @@
 /*
 Codificado por: Felipe de A. R. França
 
-Versão: 1.2
+Versão: 1.3
 
 Data: 30/08/2024
-Hora: 22:50
+Hora: 22:58
 
 Descrição: Calculadora didática de conversão entre bases.
 */
@@ -915,7 +915,7 @@ void real_to_double(double n){
       left_zero_count++;
     }
 
-    exponent = 10 - left_zero_count - 1;
+    exponent = 11 - left_zero_count - 1;
 
   }
   else{

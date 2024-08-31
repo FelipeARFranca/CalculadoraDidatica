@@ -1,2 +1,4 @@
 # CalculaoraInterativa
-Calculadora Interativa
+Calculadora Didática
+
+Realiza conversões de decimal para outras bases.

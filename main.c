@@ -1,10 +1,10 @@
 /*
 Codificado por: Felipe de A. R. França
 
-Versão: 1.1
+Versão: 1.2
 
 Data: 30/08/2024
-Hora: 10:12
+Hora: 22:50
 
 Descrição: Calculadora didática de conversão entre bases.
 */
@@ -20,10 +20,14 @@ void int_to_bcd(int n);
 
 void int_to_signed_bin(int n);
 
+void real_to_float(float n);
+void real_to_double(double n);
+
 int main (void){
 
   int int_num;
   float float_num;
+  double double_num;
 
   int choice;
   
@@ -35,7 +39,9 @@ int main (void){
     printf("2 - Decimal para Octal (8bits)\n");
     printf("3 - Decimal para Hexadecimal (8bits)\n");
     printf("4 - Decimal para BCD (12bits)\n\n");
-    printf("5 - Decimal para Binário com Sinal (16bits)\n");
+    printf("5 - Decimal para Binário com Sinal (16bits)\n\n");
+    printf("6 - Decimal para Float (32bits)\n");
+    printf("7 - Decimal para Double (64bits)\n\n");
     printf("\n0 - Sair\n");
     
     printf("===============================================================\n");
@@ -54,10 +60,10 @@ int main (void){
 
       if (int_num > 255){
         printf("!OVERFLOW!\n");
-        printf("Numero escolhido excede o limite de 8bits!\n");
+        printf("Número escolhido excede o limite de 8bits!\n");
       }
       else if (int_num < 0){
-        printf("Numero escolhido é negativo!\n");
+        printf("Número escolhido é negativo!\n");
       }
       else{
         int_to_bin(int_num);
@@ -70,10 +76,10 @@ int main (void){
       printf("\n");
       if (int_num > 255){
         printf("!OVERFLOW!\n");
-        printf("Numero escolhido excede o limite de 8bits!\n");
+        printf("Número escolhido excede o limite de 8bits!\n");
       }
       else if (int_num < 0){
-        printf("Numero escolhido é negativo!\n");
+        printf("Número escolhido é negativo!\n");
       }
       else{
         int_to_oct(int_num);
@@ -86,10 +92,10 @@ int main (void){
       printf("\n");
       if (int_num > 255){
         printf("!OVERFLOW!\n");
-        printf("Numero escolhido excede o limite de 8bits!\n");
+        printf("Número escolhido excede o limite de 8bits!\n");
       }
       else if (int_num < 0){
-        printf("Numero escolhido é negativo!\n");
+        printf("Número escolhido é negativo!\n");
       }
       else{
         int_to_hex(int_num);
@@ -102,10 +108,10 @@ int main (void){
       scanf(" %d", &int_num);
       printf("\n");
       if (int_num > 999){
-        printf("Numero escolhido excede o limite de 12bits!\n");
+        printf("Número escolhido excede o limite de 12bits!\n");
       }
       else if (int_num < 0){
-        printf("Numero escolhido é negativo!\n");
+        printf("Número escolhido é negativo!\n");
       }
       else{
         int_to_bcd(int_num);
@@ -118,16 +124,30 @@ int main (void){
       printf("\n");
       if (int_num > 32767){
         printf("!OVERFLOW!\n");
-        printf("Numero escolhido excede o limite de 16bits!\n");
+        printf("Número escolhido excede o limite de 16bits!\n");
       }
       else if (int_num < -32768){
         printf("!OVERFLOW!\n");
-        printf("Numero escolhido excede o limite de 16bits!\n");
+        printf("Número escolhido excede o limite de 16bits!\n");
       }
       else{
         int_to_signed_bin(int_num);
         printf("\n");
       }
+    }
+    else if (choice == 6){
+      printf("Digite um número real: ");
+      scanf(" %f", &float_num);
+      printf("\n");
+      real_to_float(float_num);
+      printf("\n");
+    } 
+    else if (choice == 7){
+      printf("Digite um número real: ");
+      scanf(" %lf", &double_num);
+      printf("\n");
+      real_to_double(double_num);
+      printf("\n");
     }
     else{
       printf("Opção inválida!\n");
@@ -139,7 +159,7 @@ int main (void){
     
   }
 
-
+  return 0;
   
 }
 
@@ -553,5 +573,490 @@ void int_to_signed_bin(int n){
       printf("%d", bin[i]);
     }
     printf("\n");
+  }
+}
+
+void real_to_float(float n){
+  
+  int signal;
+  int exponent;
+
+  float originaln = n;
+
+  if (n < 0){
+    signal = 1;
+    n = n * -1;
+  }
+  else{
+    signal = 0;
+  }
+
+  int int_part = (int)n;
+  float dec_part = n - int_part;
+
+  int int_bin[8];
+  int dec_bin[23];
+
+  for (int i = 0; i < 8; i++){
+    int_bin[i] = 0;
+  }
+
+  for (int i = 0; i < 23; i++){
+    dec_bin[i] = 0;
+  }
+
+  int i = 0;
+
+  printf("Para a conversão de real para ponto flutuante, é necessário seguir alguns passos.\n\n");
+
+  printf("1. Guardar o sinal do número.\n\n");
+
+  if (originaln < 0){
+    printf("O número escolhido é negativo, então o bit de sinal será 1.\n\n\n");
+  }
+  else if (originaln > 0){
+    printf("O número escolhido é positivo, então o bit de sinal será 0.\n\n\n");
+  }
+  else{
+    printf("O número escolhido é 0, então o bit de sinal será 0.\n\n\n");
+  }
+
+  printf("2. Converter o número em real para binário.\n");
+
+  printf("Primeiro, fazemos a conversão da parte inteira para binário.\n\n");
+
+  
+
+  while (int_part != 0){
+
+    int_bin[7 - i] = int_part % 2;
+      printf(" %d |___2___\n", int_part);
+      printf(" %d   %d\n", int_part % 2, int_part / 2);
+      printf("\n");
+    
+    int_part = int_part / 2;
+    i++;
+  }
+  printf("\n");
+
+  printf("Assim obtemos: ");
+  for (int i = 0; i < 8; i++){
+    printf("%d", int_bin[i]);
+  }
+  printf("\n\n");
+
+  printf("Agora, fazemos a conversão da parte decimal para binário.\n\n");
+  printf("Para isso, fazemos a multiplicação da parte decimal por 2, até que o resultado tenha apenas uma parte inteira.\n\n");
+
+  i = 0;
+  while (dec_part != 0){
+    dec_bin[i] = (int)(dec_part * 2);
+    printf("%f x 2 = %f\n", dec_part, 2 * dec_part);
+    dec_part = dec_part * 2 - (int)(dec_part * 2);
+    i++;
+  }
+
+  printf("Agora organizamos as partes inteiras das multiplicações da esquerda para a direita.\n\n");
+  printf("Assim obtemos: ");
+  for (int i = 0; i < 23; i++){
+    printf("%d", dec_bin[i]);
+  }
+  printf("\n\n");
+
+  
+  int left_zero_count = 0;
+  
+  if (n >= 1){
+    exponent = 0;
+    
+    while (int_bin[left_zero_count] == 0){
+      left_zero_count++;
+    }
+
+    exponent = 8 - left_zero_count - 1;
+    
+  }
+  else{
+    exponent = 0;
+
+    while (dec_bin[exponent] == 0){
+      exponent++;
+    }
+
+    exponent = -1 * (exponent + 1);
+  }
+
+
+  int exponent_bias = 127 + exponent;
+
+  int exponent_bin[8];
+  
+  for (int i = 0; i < 8; i++){
+    exponent_bin[i] = 0;
+  }
+
+  i = 0;
+  while (exponent_bias != 0){
+    exponent_bin[7 - i] = exponent_bias % 2;
+    exponent_bias = exponent_bias / 2;
+    i++;
+  }
+
+  int fraction_bin[23];
+
+  for (int i = 0; i < 23; i++){
+    fraction_bin[i] = 0;
+  }
+
+  int j = 0;
+
+  int buffer_bin[31];
+
+  for (int i = 0; i < 31; i++){
+    if (i < 8){
+      buffer_bin[i] = int_bin[i];
+    }
+    else{
+      buffer_bin[i] = dec_bin[i - 8];
+    }
+  }
+
+  while (buffer_bin[j] == 0){
+    j++;
+  }
+
+  j++;
+
+  for (int i = j; i < 31; i++){
+
+    fraction_bin[i - j] = buffer_bin[i];
+  }
+
+  printf("\n3. Fazer o cálculo do expoente.\n\n");
+  printf("Para isso, precisamos primeiro colocar o número que encontramos em notação científica na base 2.\n\n");
+
+  for (int i = 0; i < 8; i++){
+    printf("%d", int_bin[i]);
+  }
+  printf(".");
+  for (int i = 0; i < 23; i++){
+    printf("%d", dec_bin[i]);
+  }
+  printf("\n");
+  printf("v\n");
+
+  int flag = 0;
+  for (int i = 0; i < 31; i++){
+    
+    printf("%d", buffer_bin[i]);
+    
+    if (buffer_bin[i] == 1){
+      flag ++;
+    }
+    if (flag == 1){
+      printf(".");
+    }
+    
+  }
+  printf(" x 2^%d\n", exponent);
+
+  printf("\n");
+
+  printf("Tendo em mãos o expoente, soma-se 127 ao expoente encontrado.\n");
+  printf("Assim, obtemos o expoente com viés.\n\n");
+  printf("%d + 127 = %d\n\n", exponent, 127 + exponent);
+
+  printf("Fazemos então, a conversão do expoente para binário.\n\n");
+
+  int exponent_biasPrint = 127 + exponent;
+
+  int exponent_binPrint[8];
+
+  for (int i = 0; i < 8; i++){
+    exponent_binPrint[i] = 0;
+  }
+
+  int k = 0;
+  
+  while (exponent_biasPrint != 0){
+    
+    exponent_binPrint[7 - k] = exponent_biasPrint % 2;
+    printf(" %d |___2___\n", exponent_biasPrint);
+    printf(" %d   %d\n", exponent_biasPrint % 2, exponent_biasPrint / 2);
+    printf("\n");
+    exponent_biasPrint = exponent_biasPrint / 2;
+    i++;
+  }
+
+  printf("Assim obtemos o expoente (parte inteira) do nosso número float: ");
+  
+  for (int i = 0; i < 8; i++){
+    printf("%d", exponent_bin[i]);
+  }
+
+  printf("\n\n");
+  
+  printf("4. Fazer o cálculo da mantissa (parte fração).\n\n");
+
+  printf("Para isso, basta separarmos a parte decimal do número que colocamos em notação científica na base 2.\n\n");
+
+  printf("0.");
+  for (int i = 0; i < 23; i++){
+    printf("%d", fraction_bin[i]);
+  }
+  printf("\n\n");
+  
+  printf("Juntando tudo, obtemos o número real em ponto flutuante.\n\n");
+  
+  printf("Número real %f como float: ", originaln);
+  printf("%d ", signal);
+  for (int i = 0; i < 8; i++){
+    printf("%d", exponent_bin[i]);
+  }
+  printf(".");
+  for (int i = 0; i < 23; i++){
+    printf("%d", fraction_bin[i]);
+  }
+}
+
+void real_to_double(double n){
+  int signal;
+  int exponent;
+
+  double originaln = n;
+
+  if (n < 0){
+    signal = 1;
+    n = n * -1;
+  }
+  else{
+    signal = 0;
+  }
+
+  int int_part = (int)n;
+  double dec_part = n - int_part;
+
+  int int_bin[11];
+  int dec_bin[52];
+
+  for (int i = 0; i < 11; i++){
+    int_bin[i] = 0;
+  }
+
+  for (int i = 0; i < 52; i++){
+    dec_bin[i] = 0;
+  }
+
+  int i = 0;
+
+  printf("Para a conversão de real para double, é necessário seguir alguns passos.\n\n");
+
+  printf("1. Guardar o sinal do número.\n\n");
+
+  if (originaln < 0){
+    printf("O número escolhido é negativo, então o bit de sinal será 1.\n\n\n");
+  }
+  else if (originaln > 0){
+    printf("O número escolhido é positivo, então o bit de sinal será 0.\n\n\n");
+  }
+  else{
+    printf("O número escolhido é 0, então o bit de sinal será 0.\n\n\n");
+  }
+
+  printf("2. Converter o número em real para binário.\n");
+
+  printf("Primeiro, fazemos a conversão da parte inteira para binário.\n\n");
+
+
+
+  while (int_part != 0){
+
+    int_bin[10 - i] = int_part % 2;
+      printf(" %d |___2___\n", int_part);
+      printf(" %d   %d\n", int_part % 2, int_part / 2);
+      printf("\n");
+
+    int_part = int_part / 2;
+    i++;
+  }
+  printf("\n");
+
+  printf("Assim obtemos: ");
+  for (int i = 0; i < 10; i++){
+    printf("%d", int_bin[i]);
+  }
+  printf("\n\n");
+
+  printf("Agora, fazemos a conversão da parte decimal para binário.\n\n");
+  printf("Para isso, fazemos a multiplicação da parte decimal por 2, até que o resultado tenha apenas uma parte inteira.\n\n");
+
+  i = 0;
+  while (dec_part != 0){
+    dec_bin[i] = (int)(dec_part * 2);
+    printf("%f x 2 = %f\n", dec_part, 2 * dec_part);
+    dec_part = dec_part * 2 - (int)(dec_part * 2);
+    i++;
+  }
+
+  printf("Agora organizamos as partes inteiras das multiplicações da esquerda para a direita.\n\n");
+  printf("Assim obtemos: ");
+  for (int i = 0; i < 52; i++){
+    printf("%d", dec_bin[i]);
+  }
+  printf("\n\n");
+
+
+  int left_zero_count = 0;
+
+  if (n >= 1){
+    exponent = 0;
+
+    while (int_bin[left_zero_count] == 0){
+      left_zero_count++;
+    }
+
+    exponent = 10 - left_zero_count - 1;
+
+  }
+  else{
+    exponent = 0;
+
+    while (dec_bin[exponent] == 0){
+      exponent++;
+    }
+
+    exponent = -1 * (exponent + 1);
+  }
+
+
+  int exponent_bias = 1023 + exponent;
+
+  int exponent_bin[11];
+
+  for (int i = 0; i < 11; i++){
+    exponent_bin[i] = 0;
+  }
+
+  i = 0;
+  while (exponent_bias != 0){
+    exponent_bin[10 - i] = exponent_bias % 2;
+    exponent_bias = exponent_bias / 2;
+    i++;
+  }
+
+  int fraction_bin[52];
+
+  for (int i = 0; i < 52; i++){
+    fraction_bin[i] = 0;
+  }
+
+  int j = 0;
+
+  int buffer_bin[63];
+
+  for (int i = 0; i < 63; i++){
+    if (i < 11){
+      buffer_bin[i] = int_bin[i];
+    }
+    else{
+      buffer_bin[i] = dec_bin[i - 11];
+    }
+  }
+
+  while (buffer_bin[j] == 0){
+    j++;
+  }
+
+  j++;
+
+  for (int i = j; i < 63; i++){
+
+    fraction_bin[i - j] = buffer_bin[i];
+  }
+
+  printf("\n3. Fazer o cálculo do expoente.\n\n");
+  printf("Para isso, precisamos primeiro colocar o número que encontramos em notação científica na base 2.\n\n");
+
+  for (int i = 0; i < 11; i++){
+    printf("%d", int_bin[i]);
+  }
+  printf(".");
+  for (int i = 0; i < 52; i++){
+    printf("%d", dec_bin[i]);
+  }
+  printf("\n");
+  printf("v\n");
+
+  int flag = 0;
+  for (int i = 0; i < 63; i++){
+
+    printf("%d", buffer_bin[i]);
+
+    if (buffer_bin[i] == 1){
+      flag ++;
+    }
+    if (flag == 1){
+      printf(".");
+    }
+
+  }
+  printf(" x 2^%d\n", exponent);
+
+  printf("\n");
+
+  printf("Tendo em mãos o expoente, soma-se 1023 ao expoente encontrado.\n");
+  printf("Assim, obtemos o expoente com viés.\n\n");
+  printf("%d + 1023 = %d\n\n", exponent, 1023 + exponent);
+
+  printf("Fazemos então, a conversão do expoente para binário.\n\n");
+
+  int exponent_biasPrint = 1023 + exponent;
+
+  int exponent_binPrint[11];
+
+  for (int i = 0; i < 11; i++){
+    exponent_binPrint[i] = 0;
+  }
+
+  int k = 0;
+
+  while (exponent_biasPrint != 0){
+
+    exponent_binPrint[10 - k] = exponent_biasPrint % 2;
+    printf(" %d |___2___\n", exponent_biasPrint);
+    printf(" %d   %d\n", exponent_biasPrint % 2, exponent_biasPrint / 2);
+    printf("\n");
+    exponent_biasPrint = exponent_biasPrint / 2;
+    i++;
+  }
+
+  printf("Assim obtemos o expoente (parte inteira) do nosso número double: ");
+
+  for (int i = 0; i < 11; i++){
+    printf("%d", exponent_bin[i]);
+  }
+
+  printf("\n\n");
+
+  printf("4. Fazer o cálculo da mantissa (parte fração).\n\n");
+
+  printf("Para isso, basta separarmos a parte decimal do número que colocamos em notação científica na base 2.\n\n");
+
+  printf("0.");
+  for (int i = 0; i < 52; i++){
+    printf("%d", fraction_bin[i]);
+  }
+  printf("\n\n");
+
+  printf("Juntando tudo, obtemos o número real em double.\n\n");
+
+  printf("Número real %lf como double: ", originaln);
+  printf("%d ", signal);
+  for (int i = 0; i < 11; i++){
+    printf("%d", exponent_bin[i]);
+  }
+  printf(".");
+  for (int i = 0; i < 52; i++){
+    printf("%d", fraction_bin[i]);
   }
 }
